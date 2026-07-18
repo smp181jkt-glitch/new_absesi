@@ -1,3 +1,12 @@
+console.log("Script app.js berhasil dimuat!"); // Tambahkan ini
+
+const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbziYrjjBKv0zcdxee5paQVXBmDLbaF7FTYijWyLJAMwlRbdwjA_e3bHH2keicMjK0y4/exec";
+const html5QrCode = new Html5QrCode("reader");
+
+document.getElementById('scanBtn').addEventListener('click', () => {
+    console.log("Tombol scan diklik!"); // Tambahkan ini
+    // ... sisa kode Anda ...
+});
 // URL Web App Anda
 const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbziYrjjBKv0zcdxee5paQVXBmDLbaF7FTYijWyLJAMwlRbdwjA_e3bHH2keicMjK0y4/exec";
 

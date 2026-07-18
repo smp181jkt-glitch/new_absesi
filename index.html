@@ -24,15 +24,15 @@
     
     let html5QrcodeScanner = new Html5Qrcode("reader");
 
-    function mulaiScan() {
+        function mulaiScan() {
       document.getElementById('statusPesan').innerText = "Mengarahkan kamera...";
       document.getElementById('btnScanLagi').style.display = "none";
       
+      // Menggunakan mode kamera langsung tanpa UI bawaan
       html5QrcodeScanner.start(
         { facingMode: "environment" }, 
         { fps: 10, qrbox: 250 },
         (decodedText) => {
-          // Berhenti scan saat berhasil
           html5QrcodeScanner.stop();
           document.getElementById('statusPesan').innerText = "Memproses...";
           
@@ -42,11 +42,16 @@
           })
           .then(res => res.json())
           .then(data => {
+            // Memperbarui tampilan pesan agar teks "Memproses" hilang
             if(data.status === "success") {
               document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
             } else {
               document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
             }
+            document.getElementById('btnScanLagi').style.display = "inline-block";
+          })
+          .catch(err => {
+            document.getElementById('statusPesan').innerText = "Error: Koneksi gagal.";
             document.getElementById('btnScanLagi').style.display = "inline-block";
           });
         }

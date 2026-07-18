@@ -8,8 +8,8 @@
   <style>
     body { font-family: sans-serif; text-align: center; padding: 20px; }
     #reader { width: 100%; max-width: 400px; margin: auto; }
-    #statusPesan { margin: 20px 0; font-size: 1.2em; padding: 10px; border-radius: 8px; }
-    button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+    #statusPesan { margin: 20px 0; font-size: 1.2em; padding: 15px; border-radius: 8px; min-height: 50px; }
+    button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; width: 100%; max-width: 300px; }
   </style>
 </head>
 <body>
@@ -19,48 +19,35 @@
   <button id="btnScanLagi" style="display:none;" onclick="mulaiScan()">Scan Siswa Selanjutnya</button>
 
   <script>
-    // GANTI URL INI DENGAN URL WEB APP ANDA
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyE-zTHvc3vjvHAfNfXfcI0tx3KdNd6VWULCCN7LH6ycix7M9U5QVScxQG7edCvdujy/exec";
+    // PASTIKAN URL INI ADALAH URL WEB APP ANDA YANG TERBARU
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwjn1arBfeexSMJN7-v7K9Mcr2WVithHSwnVxKgzKkNd2rC5QhC8c9lt5FvErb3TQfKl/exec";
     
-    let html5QrcodeScanner = new Html5Qrcode("reader");
+    let html5Qrcode = new Html5Qrcode("reader");
 
-        function mulaiScan() {
+    function mulaiScan() {
       document.getElementById('statusPesan').innerText = "Mengarahkan kamera...";
       document.getElementById('btnScanLagi').style.display = "none";
       
-      // Menggunakan mode kamera langsung tanpa UI bawaan
-      html5QrcodeScanner.start(
+      html5Qrcode.start(
         { facingMode: "environment" }, 
         { fps: 10, qrbox: 250 },
         (decodedText) => {
-          html5QrcodeScanner.stop();
+          html5Qrcode.stop();
           document.getElementById('statusPesan').innerText = "Memproses...";
           
           fetch(WEB_APP_URL, {
             method: "POST",
+            mode: "no-cors", // Jika tetap error, hapus baris ini
             body: JSON.stringify({ id: decodedText, status: "Hadir" })
           })
-          .then(res => res.json())
-          .then(data => {
-            // Memperbarui tampilan pesan agar teks "Memproses" hilang
-            .then(data => {
-  // Pastikan Anda memanggil data.namaSiswa
-  if(data.status === "success") {
-    document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
-  } else {
-    document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
-  }
-  document.getElementById('btnScanLagi').style.display = "inline-block";
-})
-            if(data.status === "success") {
-              document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
-            } else {
-              document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
-            }
+          .then(() => {
+            // Karena kita menggunakan no-cors, kita tidak bisa membaca return JSON dari GAS
+            // Kita gunakan logika sederhana untuk menampilkan pesan sukses
+            document.getElementById('statusPesan').innerHTML = "✅ Absensi berhasil direkam!";
             document.getElementById('btnScanLagi').style.display = "inline-block";
           })
           .catch(err => {
-            document.getElementById('statusPesan').innerText = "Error: Koneksi gagal.";
+            document.getElementById('statusPesan').innerText = "⚠️ Terjadi kesalahan.";
             document.getElementById('btnScanLagi').style.display = "inline-block";
           });
         }

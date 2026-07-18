@@ -111,98 +111,47 @@ function mulaiScan(){
 
 
 
-function prosesQR(id){
+// GANTI fungsi prosesQR yang lama dengan ini:
+function prosesQR(id) {
+    if (scanner) {
+        scanner.stop().then((ignore) => {
+            lanjutkanProses(id);
+        }).catch((err) => {
+            console.error("Gagal menghentikan scanner: ", err);
+            lanjutkanProses(id);
+        });
+    }
+}
 
-
-    scanner.stop();
-
-
-    hasil.innerHTML =
-    "Mengirim absensi...";
-
-
-    const url =
-    WEBAPP +
-    "?action=scan&id=" +
-    encodeURIComponent(id);
-
-
+// TAMBAHKAN fungsi baru ini tepat di bawahnya:
+function lanjutkanProses(id) {
+    hasil.innerHTML = "Mengirim absensi...";
+    
+    const url = WEBAPP + "?action=scan&id=" + encodeURIComponent(id);
 
     fetch(url)
-
-    .then(response=>response.json())
-
-    .then(data=>{
-
-
+    .then(response => response.json())
+    .then(data => {
         if(data.success){
-
-
-            hasil.className="berhasil";
-
-
-            hasil.innerHTML =
-            "✅<br><br>" +
-            data.nama +
-            "<br><br>" +
-            data.message;
-
-
-        }else{
-
-
-            hasil.className="gagal";
-
-
-            hasil.innerHTML =
-            "❌<br><br>" +
-            data.message;
-
-
+            hasil.className = "berhasil";
+            hasil.innerHTML = "✅<br><br>" + data.nama + "<br><br>" + data.message;
+        } else {
+            hasil.className = "gagal";
+            hasil.innerHTML = "❌<br><br>" + data.message;
         }
 
-
-
-        setTimeout(()=>{
-
-
-            hasil.className="";
-
-            hasil.innerHTML =
-            "Silakan scan QR berikutnya";
-
-
-            tombol.style.display="block";
-
-            scanning=false;
-
-
-        },2500);
-
-
-
+        setTimeout(() => {
+            hasil.className = "";
+            hasil.innerHTML = "Silakan scan QR berikutnya";
+            tombol.style.display = "block";
+            scanning = false;
+        }, 2500);
     })
-
-
-    .catch(error=>{
-
-
+    .catch(error => {
         console.log(error);
-
-
-        hasil.className="gagal";
-
-
-        hasil.innerHTML =
-        "❌ Server tidak dapat dihubungi";
-
-
-        tombol.style.display="block";
-
-        scanning=false;
-
-
+        hasil.className = "gagal";
+        hasil.innerHTML = "❌ Server tidak dapat dihubungi";
+        tombol.style.display = "block";
+        scanning = false;
     });
-
-
 }

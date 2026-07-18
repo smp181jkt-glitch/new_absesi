@@ -1,35 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base target="_top">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scanner Absensi</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 20px; }
-    #reader { width: 100%; max-width: 500px; margin: auto; }
+    #reader { width: 100%; max-width: 400px; margin: auto; }
+    #statusPesan { margin: 20px 0; font-size: 1.2em; padding: 10px; border-radius: 8px; }
+    button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
   </style>
 </head>
 <body>
   <h3>Scanner Absensi</h3>
   <div id="reader"></div>
-  <p id="result"></p>
+  <div id="statusPesan"></div>
+  <button id="btnScanLagi" style="display:none;" onclick="mulaiScan()">Scan Siswa Selanjutnya</button>
 
   <script>
-    const url = "https://script.google.com/macros/s/AKfycbwz8Ec47_GGxnkgYEWhoN4raE7Pg_Qn1iCVFeDfgYiPnz6g1iel6RMRlriLtxfT1EXp/exec"; // GANTI DENGAN URL DARI SCREENSHOT ANDA
+    // GANTI URL INI DENGAN URL WEB APP ANDA
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyE-zTHvc3vjvHAfNfXfcI0tx3KdNd6VWULCCN7LH6ycix7M9U5QVScxQG7edCvdujy/exec";
+    
+    let html5QrcodeScanner = new Html5Qrcode("reader");
 
-    function onScanSuccess(decodedText) {
-      document.getElementById('result').innerText = "Memproses: " + decodedText;
+    function mulaiScan() {
+      document.getElementById('statusPesan').innerText = "Mengarahkan kamera...";
+      document.getElementById('btnScanLagi').style.display = "none";
       
-      fetch(url, {
-        method: "POST",
-        body: JSON.stringify({ id: decodedText, nama: "Manual", status: "Hadir" })
-      })
-      .then(res => res.json())
-      .then(data => alert(data.message));
+      html5QrcodeScanner.start(
+        { facingMode: "environment" }, 
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          // Berhenti scan saat berhasil
+          html5QrcodeScanner.stop();
+          document.getElementById('statusPesan').innerText = "Memproses...";
+          
+          fetch(WEB_APP_URL, {
+            method: "POST",
+            body: JSON.stringify({ id: decodedText, status: "Hadir" })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if(data.status === "success") {
+              document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
+            } else {
+              document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
+            }
+            document.getElementById('btnScanLagi').style.display = "inline-block";
+          });
+        }
+      );
     }
 
-    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess);
+    // Jalankan scan saat halaman dibuka
+    mulaiScan();
   </script>
 </body>
 </html>

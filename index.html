@@ -1,49 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://unpkg.com/html5-qrcode"></script>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    #reader { width: 100%; max-width: 400px; margin: auto; }
-    #statusPesan { margin: 20px 0; font-size: 1.2em; font-weight: bold; }
-  </style>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Absensi QR Kelas 4A</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+<!-- Library QR Scanner -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+
 </head>
+
+
 <body>
-  <h3>Scanner Absensi</h3>
-  <div id="reader"></div>
-  <div id="statusPesan"></div>
-  <button id="btnScanLagi" style="display:none; padding:15px;" onclick="mulaiScan()">Scan Siswa Selanjutnya</button>
 
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5PqHz-2WxdiXIOFS8xFqh_OGU_rkDu2DzRgmRiX_zqoqnpbqYI5EVuL7S1fqNuEM4/exec";
-    let html5Qrcode = new Html5Qrcode("reader");
 
-    function mulaiScan() {
-      document.getElementById('statusPesan').innerText = "Mengarahkan kamera...";
-      document.getElementById('btnScanLagi').style.display = "none";
-      
-      html5Qrcode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (decodedText) => {
-        html5Qrcode.stop();
-        document.getElementById('statusPesan').innerText = "Memproses...";
-        
-        fetch(WEB_APP_URL, {
-          method: "POST",
-          body: JSON.stringify({ id: decodedText, status: "Hadir" })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if(data.status === "success") {
-            document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
-          } else {
-            document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
-          }
-          document.getElementById('btnScanLagi').style.display = "block";
-        });
-      });
-    }
-    mulaiScan();
-  </script>
+<div class="container">
+
+
+<h1>📚 ABSENSI SISWA</h1>
+
+<h2>Kelas 4A</h2>
+
+
+<div id="reader"></div>
+
+
+<div id="hasil">
+Silakan tekan tombol mulai scan
+</div>
+
+
+<button id="scanBtn">
+Mulai Scan
+</button>
+
+
+</div>
+
+
+
+<script src="app.js"></script>
+
+
 </body>
+
 </html>

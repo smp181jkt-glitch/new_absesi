@@ -127,10 +127,22 @@ function prosesQR(id) {
 function lanjutkanProses(id) {
     hasil.innerHTML = "Mengirim absensi...";
     
+    // Tambahkan 'mode: "no-cors"' jika masalah CORS berlanjut, 
+    // tapi karena kita butuh membaca data JSON, sebaiknya gunakan header 'cors' 
+    // dan pastikan setelan CORS di GS sudah benar.
     const url = WEBAPP + "?action=scan&id=" + encodeURIComponent(id);
 
-    fetch(url)
-    .then(response => response.json())
+    fetch(url, {
+        method: 'GET',
+        mode: 'cors', // Pastikan mode ini aktif
+        redirect: 'follow' // Ini penting agar fetch mengikuti redirect Google
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Respons server tidak ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if(data.success){
             hasil.className = "berhasil";
@@ -148,7 +160,7 @@ function lanjutkanProses(id) {
         }, 2500);
     })
     .catch(error => {
-        console.log(error);
+        console.error("Error Detail:", error); // Menampilkan error detail di console
         hasil.className = "gagal";
         hasil.innerHTML = "❌ Server tidak dapat dihubungi";
         tombol.style.display = "block";

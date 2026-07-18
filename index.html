@@ -43,6 +43,15 @@
           .then(res => res.json())
           .then(data => {
             // Memperbarui tampilan pesan agar teks "Memproses" hilang
+            .then(data => {
+  // Pastikan Anda memanggil data.namaSiswa
+  if(data.status === "success") {
+    document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
+  } else {
+    document.getElementById('statusPesan').innerText = "⚠️ " + data.message;
+  }
+  document.getElementById('btnScanLagi').style.display = "inline-block";
+})
             if(data.status === "success") {
               document.getElementById('statusPesan').innerHTML = "✅ Berhasil: <b>" + data.namaSiswa + "</b>";
             } else {

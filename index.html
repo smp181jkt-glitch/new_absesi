@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    #reader { width: 100%; max-width: 500px; margin: auto; }
+  </style>
+</head>
+<body>
+  <h3>Scanner Absensi</h3>
+  <div id="reader"></div>
+  <p id="result"></p>
+
+  <script>
+    const url = "https://script.google.com/macros/s/AKfycbwz8Ec47_GGxnkgYEWhoN4raE7Pg_Qn1iCVFeDfgYiPnz6g1iel6RMRlriLtxfT1EXp/exec"; // GANTI DENGAN URL DARI SCREENSHOT ANDA
+
+    function onScanSuccess(decodedText) {
+      document.getElementById('result').innerText = "Memproses: " + decodedText;
+      
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ id: decodedText, nama: "Manual", status: "Hadir" })
+      })
+      .then(res => res.json())
+      .then(data => alert(data.message));
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
+</body>
+</html>

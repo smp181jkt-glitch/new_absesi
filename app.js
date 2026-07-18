@@ -1,4 +1,4 @@
-const WEBAPP = "https://script.google.com/macros/s/AKfycbxTZiz9eYxgJw0zqIFIdNsmTpuROPHAImiA554RoJHXKFWBfOaekaAp6hiY6kqmd100/exec";
+const WEBAPP = "https://script.google.com/macros/s/AKfycbx_lq0cgllyIQoiULbhMWl1YwO2i4GmFshD6kc_NIlZIuJC1Tip4bajjJhDJ27w3PaP/exec";
 
 const hasil = document.getElementById("hasil");
 const tombol = document.getElementById("scanBtn");

@@ -1,19 +1,13 @@
-console.log("Script app.js berhasil dimuat!"); // Tambahkan ini
-
+// 1. Konfigurasi
 const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbziYrjjBKv0zcdxee5paQVXBmDLbaF7FTYijWyLJAMwlRbdwjA_e3bHH2keicMjK0y4/exec";
 const html5QrCode = new Html5QrCode("reader");
 
-document.getElementById('scanBtn').addEventListener('click', () => {
-    console.log("Tombol scan diklik!"); // Tambahkan ini
-    // ... sisa kode Anda ...
-});
-// URL Web App Anda
-const URL_WEB_APP = "https://script.google.com/macros/s/AKfycbziYrjjBKv0zcdxee5paQVXBmDLbaF7FTYijWyLJAMwlRbdwjA_e3bHH2keicMjK0y4/exec";
+console.log("Script app.js berhasil dimuat!");
 
-// Inisialisasi scanner
-const html5QrCode = new Html5QrCode("reader");
-
+// 2. Logika Utama
 document.getElementById('scanBtn').addEventListener('click', async () => {
+    console.log("Tombol scan diklik!");
+    
     const scanBtn = document.getElementById('scanBtn');
     const hasil = document.getElementById('hasil');
 
@@ -52,5 +46,6 @@ document.getElementById('scanBtn').addEventListener('click', async () => {
     } catch (err) {
         scanBtn.disabled = false;
         hasil.innerText = "Gagal membuka kamera: " + err;
+        console.error("Error Detail:", err);
     }
 });
